@@ -45,6 +45,8 @@ export const MODULES: ModuleMeta[] = [
     actions: ["提交投运", "登记停运", "安排检修"],
     actionTargets: {"提交投运": "运行中", "登记停运": "已停运", "安排检修": "检修中"},
     metrics: ["运行中锅炉", "已停运锅炉", "检修中锅炉"],
+    // 锅炉状态只能 待投运→运行中→已停运→检修中，判定结果同步到检修待安排清单。
+    forwardFlow: true,
   },
   {
     key: "turbine",

@@ -1,5 +1,12 @@
 import { MODULE_BY_KEY } from '@/data/modules'
 import { allRows, listRows, resetRows, saveRows } from '@/data/local-store'
+import {
+  BOILER_MODULE_KEY,
+  boilerStatusCounts,
+  currentBoilers,
+  syncMaintenanceToOverhaul,
+  checkBoilerTransition,
+} from '@/data/boiler-domain'
 import type { ActionResult, EntryRow, ModuleMeta, OverviewResult, PageResult } from '@/data/types'
 
 // 会写进数据的「往回走」动作：命中就把这条记录标成异常态，看板上能一眼看出来。
@@ -43,6 +50,14 @@ export function runAction(key: string, id: number, action: string): ActionResult
   if (current === target) {
     return { ok: false, message: `${meta.entity}已经是「${target}」，不用重复操作` }
   }
+  // 顺向流转模块（余热锅炉）：状态只能沿状态表一级级往下走，不允许跳级或回退。
+  if (meta.forwardFlow) {
+    const flow =
+      key === BOILER_MODULE_KEY ? checkBoilerTransition(current, action) : checkForwardFlow(meta, current, target)
+    if (!flow.ok) {
+      return { ok: false, message: flow.message }
+    }
+  }
   const lastStatus = meta.statuses[meta.statuses.length - 1]
   const updated: EntryRow = {
     ...rows[index],
@@ -53,7 +68,27 @@ export function runAction(key: string, id: number, action: string): ActionResult
   const next = [...rows]
   next[index] = updated
   saveRows(key, next)
+  // 锅炉状态判定结果同步到检修的待安排清单。
+  if (key === BOILER_MODULE_KEY && target === '检修中') {
+    syncMaintenanceToOverhaul()
+  }
   return { ok: true, message: `${meta.entity}已${action}，当前状态「${target}」` }
+}
+
+function checkForwardFlow(
+  meta: ModuleMeta,
+  current: string,
+  target: string,
+): { ok: true } | { ok: false; message: string } {
+  const currentIndex = meta.statuses.indexOf(current)
+  const targetIndex = meta.statuses.indexOf(target)
+  if (currentIndex < 0 || targetIndex < 0 || targetIndex !== currentIndex + 1) {
+    return {
+      ok: false,
+      message: `${meta.entity}状态只能从「${current}」顺向走到下一级，不允许直接跳到「${target}」`,
+    }
+  }
+  return { ok: true }
 }
 
 export function resetModule(key: string): PageResult {
@@ -85,9 +120,23 @@ export function downloadEntries(key: string): void {
 }
 
 export function loadOverview(): OverviewResult {
+  // 运营概览每次重算前先对齐锅炉口径：落库状态校准 + 检修待安排清单同步。
+  syncMaintenanceToOverhaul()
+  const boilerMap = new Map(currentBoilers().map((item) => [Number(item.row.id), item]))
+  const boilerCounts = boilerStatusCounts()
   const rows = allRows()
   const modules = [...MODULE_BY_KEY.values()].map((meta) => {
     const entries = rows[meta.key] ?? []
+    if (meta.key === BOILER_MODULE_KEY) {
+      // 锅炉模块与看板同源：同一编号重复登记只算一台，待处理=待投运，异常量=主蒸汽温度超限。
+      const unique = [...boilerMap.values()]
+      return {
+        name: meta.name,
+        created: unique.length,
+        pending: boilerCounts['待投运'],
+        abnormal: unique.filter((item) => item.overTemp).length,
+      }
+    }
     return {
       name: meta.name,
       created: entries.length,

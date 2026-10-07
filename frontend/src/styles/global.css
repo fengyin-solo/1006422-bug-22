@@ -35,3 +35,57 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .error-text { color: #b42318; }
 .status-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 10px; font-size: 12px; color: var(--muted); }
 .legend-item { background: #eef2f7; border-radius: 999px; padding: 2px 10px; }
+.legend-total { background: #e7f0ff; color: #1f4f9e; }
+
+/* 余热锅炉统一展示：四个状态分块并排，按锅炉编号固定排列 */
+.stat-sub { display: block; margin-top: 2px; font-size: 11px; color: var(--muted); }
+.section-title { font-size: 15px; margin: 18px 0 8px; }
+.board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+.board-compact { margin-bottom: 0; }
+.board-column { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px; min-height: 120px; }
+.board-column-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 8px; }
+.board-count { font-size: 12px; color: var(--muted); background: #eef2f7; border-radius: 999px; padding: 1px 8px; }
+.board-empty { font-size: 12px; color: var(--muted); text-align: center; padding: 16px 0; }
+.boiler-card { display: block; width: 100%; text-align: left; background: #f8fafc; border: 1px solid var(--border); border-left: 3px solid #94a3b8; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; cursor: pointer; text-decoration: none; color: inherit; font: inherit; }
+button.boiler-card { font-family: inherit; }
+.boiler-card:hover { border-color: var(--brand); }
+.boiler-card.active { border-color: var(--brand); box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.18); }
+.boiler-card.alarm { border-left-color: #d92d20; background: #fff5f3; }
+.boiler-card-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-size: 13px; }
+.boiler-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin: 6px 0 0; }
+.boiler-metrics dt { font-size: 11px; color: var(--muted); }
+.boiler-metrics dd { margin: 0; font-size: 13px; font-weight: 600; }
+.boiler-metrics em, .unit { font-style: normal; font-weight: 400; font-size: 10px; color: var(--muted); margin-left: 2px; }
+
+/* 详情面板与块、明细同源 */
+.detail-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+.detail-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.detail-time { font-size: 12px; color: var(--muted); }
+.detail-metrics { display: flex; gap: 28px; margin: 10px 0 6px; }
+.detail-metrics dt { font-size: 12px; color: var(--muted); }
+.detail-metrics dd { margin: 2px 0 0; font-size: 18px; font-weight: 600; }
+.detail-metrics em { font-style: normal; font-weight: 400; font-size: 11px; color: var(--muted); margin-left: 3px; }
+.detail-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.detail-hint { font-size: 12px; color: var(--muted); }
+
+/* 同步清单与标签 */
+.sync-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; }
+.sync-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.sync-head h3 { margin: 0; font-size: 15px; }
+.sync-hint { font-size: 12px; color: var(--muted); }
+.tag { display: inline-block; font-size: 11px; line-height: 18px; border-radius: 999px; padding: 0 8px; white-space: nowrap; }
+.tag-alarm { background: #fee4e2; color: #b42318; }
+.tag-current { background: #e7f0ff; color: #1f4f9e; }
+.tag-history { background: #eef2f7; color: var(--muted); }
+.tag-pending { background: #fff4e0; color: #b54708; }
+.tag-running { background: #e7f0ff; color: #1f4f9e; }
+.tag-done { background: #e6f7ee; color: #067647; }
+.tag-status-0 { background: #eef2f7; color: var(--muted); }
+.tag-status-1 { background: #e7f0ff; color: #1f4f9e; }
+.tag-status-2 { background: #f2f4f7; color: #475467; }
+.tag-status-3 { background: #fff4e0; color: #b54708; }
+.alarm-text { color: #d92d20; font-weight: 600; }
+.muted-text { color: var(--muted); font-size: 12px; }
+.row-history { color: var(--muted); }
+.row-history td { background: #fafbfc; }
+.row-alarm td { background: #fff7f6; }

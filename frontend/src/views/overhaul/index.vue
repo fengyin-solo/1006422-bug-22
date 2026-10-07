@@ -18,6 +18,32 @@
       </article>
     </div>
 
+    <section class="sync-section">
+      <h3 class="section-title">检修待安排清单 · 余热锅炉同步</h3>
+      <p class="page-desc">
+        锅炉状态判定为「检修中」即自动进入本清单，检修侧不再按锅炉状态另算一遍；当前待安排
+        <strong>{{ pendingBoilers.length }}</strong> 台。
+      </p>
+      <table class="data-table">
+        <thead>
+          <tr><th>锅炉编号</th><th>主蒸汽压力(MPa)</th><th>给水流量(t/h)</th><th>主蒸汽温度(℃)</th><th>锅炉判定状态</th><th>检修单号</th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="unit in pendingBoilers" :key="unit.code">
+            <td>{{ unit.code }}</td>
+            <td>{{ unit.pressure.toFixed(2) }}</td>
+            <td>{{ unit.feedwater.toFixed(1) }}</td>
+            <td :class="{ 'metric-alert': unit.overTemp }">{{ unit.steamTemp.toFixed(1) }}</td>
+            <td><span class="status-pill is-repair">{{ unit.status }}</span></td>
+            <td>{{ pendingOrderNo(unit.code) }}</td>
+          </tr>
+          <tr v-if="!pendingBoilers.length">
+            <td colspan="6" class="empty-state">暂无判定为检修中的余热锅炉</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
     <p class="status-legend">
       <span v-for="item in statusSummary" :key="item.status" class="legend-item">
         {{ item.status }}：{{ item.count }}
@@ -79,6 +105,8 @@ import {
   moduleMeta,
   runAction as applyAction,
 } from '@/api/local-service'
+import { listRows } from '@/data/local-store'
+import { BOILER_KEY, overhaulPendingBoilers, type BoilerUnit } from '@/domain/boiler'
 import type { EntryRow } from '@/data/types'
 
 const meta = moduleMeta('overhaul')
@@ -92,6 +120,20 @@ const total = ref(0)
 const errorMessage = ref('')
 const filters = ref<Record<string, string>>({})
 const filterFields = columns.slice(0, 3)
+
+// 待安排清单直接读锅炉统一口径；rows 变化（含同步补录）时随之重算，检修侧不再自己按状态数。
+const pendingBoilers = computed<BoilerUnit[]>(() => {
+  void rows.value
+  return overhaulPendingBoilers()
+})
+
+function pendingOrderNo(code: string): string {
+  const hit = listRows(meta.key).find(
+    (row) => row['来源模块'] === BOILER_KEY && String(row['来源编号'] ?? '') === code,
+  )
+  return hit ? String(hit['检修编号'] ?? '—') : '待生成'
+}
+
 const statusSummary = computed(() =>
   statuses.map((status: string) => ({
     status,

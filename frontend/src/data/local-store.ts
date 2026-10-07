@@ -2,7 +2,8 @@ import { SEED_ROWS } from './seed'
 import type { EntryRow } from './types'
 
 // 本地持久化：数据放在 localStorage 里，刷新、关掉再打开都还在。
-const STORAGE_KEY = 'waste-to-energy-plant:entries'
+// v2：余热锅炉改为统一口径（真实测点、去重排序、状态字段同步），旧版本地缓存直接作废重播种。
+const STORAGE_KEY = 'waste-to-energy-plant:entries:v2'
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
@@ -56,4 +57,28 @@ export function resetRows(key: string): EntryRow[] {
 
 export function storageKey(): string {
   return STORAGE_KEY
+}
+
+// 通用 JSON 存取：历史记录等独立表用，换浏览器或清缓存才会回到种子。
+export function readJson<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return clone(fallback)
+  }
+  const raw = window.localStorage.getItem(key)
+  if (!raw) {
+    window.localStorage.setItem(key, JSON.stringify(fallback))
+    return clone(fallback)
+  }
+  try {
+    return JSON.parse(raw) as T
+  } catch {
+    window.localStorage.setItem(key, JSON.stringify(fallback))
+    return clone(fallback)
+  }
+}
+
+export function writeJson<T>(key: string, value: T): void {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    window.localStorage.setItem(key, JSON.stringify(value))
+  }
 }

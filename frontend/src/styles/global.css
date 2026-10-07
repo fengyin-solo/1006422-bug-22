@@ -35,3 +35,68 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .error-text { color: #b42318; }
 .status-legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 10px; font-size: 12px; color: var(--muted); }
 .legend-item { background: #eef2f7; border-radius: 999px; padding: 2px 10px; }
+
+/* 统一口径通用 */
+.section-title { font-size: 15px; margin: 14px 0 8px; }
+.stat-sub { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.stat-card.is-alert-card { border-color: #f0a5a0; background: #fef3f2; }
+.metric-alert { color: #b42318; font-weight: 600; }
+.status-pill { display: inline-block; border-radius: 999px; padding: 1px 10px; font-size: 12px; background: #eef2f7; }
+.status-pill.is-idle { background: #e8eefc; color: #2c4a8c; }
+.status-pill.is-running { background: #e4f7ec; color: #177245; }
+.status-pill.is-stopped { background: #eef2f7; color: #475569; }
+.status-pill.is-repair { background: #fdf0de; color: #9a5b00; }
+.status-pill.is-alert { background: #fee4e2; color: #b42318; }
+.status-pill.is-ok { background: #e4f7ec; color: #177245; }
+
+/* 余热锅炉四状态并排块 */
+.boiler-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+.boiler-column { background: #fff; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.column-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.column-title { font-weight: 600; font-size: 14px; }
+.column-count { font-size: 12px; color: var(--muted); }
+.boiler-column.is-idle .column-head { border-top: 3px solid #6c8cd5; }
+.boiler-column.is-running .column-head { border-top: 3px solid #2da060; }
+.boiler-column.is-stopped .column-head { border-top: 3px solid #94a3b8; }
+.boiler-column.is-repair .column-head { border-top: 3px solid #e08a1e; }
+.column-body { display: flex; flex-direction: column; gap: 8px; padding: 10px; min-height: 90px; }
+.column-empty { margin: auto; color: var(--muted); font-size: 12px; }
+.boiler-card { text-align: left; border: 1px solid var(--border); border-radius: 8px; background: #fbfdff; padding: 8px 10px; cursor: pointer; display: flex; flex-direction: column; gap: 3px; font: inherit; }
+.boiler-card:hover { border-color: var(--brand); }
+.boiler-card.is-active { outline: 2px solid var(--brand); }
+.boiler-card.is-overtemp { border-color: #e0604f; background: #fef3f2; }
+.card-code { font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+.card-metric { font-size: 12px; color: #334155; }
+.overtemp-tag { font-size: 11px; font-weight: 600; color: #fff; background: #d92d20; border-radius: 4px; padding: 0 6px; }
+
+/* 详情 + 明细 */
+.boiler-main { display: grid; grid-template-columns: 300px 1fr; gap: 12px; align-items: start; }
+.detail-panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.detail-panel h3 { margin: 0 0 8px; font-size: 15px; }
+.detail-list { display: grid; grid-template-columns: 96px 1fr; gap: 6px 8px; margin: 0 0 10px; font-size: 13px; }
+.detail-list dt { color: var(--muted); }
+.detail-list dd { margin: 0; }
+.block-btn { width: 100%; }
+.message-text { font-size: 12px; margin: 8px 0 0; }
+.ledger-wrap { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+.ledger-table tr { cursor: pointer; }
+.ledger-table tr.is-overtemp td { background: #fef3f2; }
+.ledger-table tr.is-active td { background: #eef4ff; }
+.ledger-table tr.is-overtemp.is-active td { background: #fde6e3; }
+
+/* 同步清单、重复登记、历史 */
+.sync-section, .dup-section, .history-section { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-top: 14px; }
+.boiler-count-row .stat-card { position: relative; }
+.boiler-count-row .stat-card.is-idle { border-top: 3px solid #6c8cd5; }
+.boiler-count-row .stat-card.is-running { border-top: 3px solid #2da060; }
+.boiler-count-row .stat-card.is-stopped { border-top: 3px solid #94a3b8; }
+.boiler-count-row .stat-card.is-repair { border-top: 3px solid #e08a1e; }
+
+/* 登记表单弹层 */
+.modal-mask { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: flex; align-items: center; justify-content: center; z-index: 20; }
+.modal-card { background: #fff; border-radius: 10px; padding: 18px 20px; width: 380px; display: flex; flex-direction: column; gap: 10px; }
+.modal-card h3 { margin: 0; }
+.form-item { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.form-item input { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; color: #1f2937; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+
